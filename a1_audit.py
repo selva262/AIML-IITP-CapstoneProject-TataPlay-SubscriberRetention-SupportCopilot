@@ -1,28 +1,18 @@
 """
-Data Quality Check: Tata Play Subscriber Retention & Support Copilot
+====================================================================
+Capstone Project: Tata Play Subscriber Retention & Support Copilot
 ====================================================================
 
-a1_audit.py  --  Part A, Step 1: Audit the raw tables
+a1_audit.py  --  Part-A, Step-1: Audit the Raw CSVs(Tables)
 =====================================================
-Purpose:
-    First-look health check of the two raw input files i.e, Measure the "mess" in the raw exports BEFORE cleaning anything.
-
-Inputs:
-    data/raw/subscribers.csv : one row per subscriber (age, city, payment mode, etc.)
-    data/raw/recharges.csv   : one row per recharge transaction
-
-What this script reports:
+Purpose : First-look health check of the two raw input files i.e, Measure the "mess" in the raw exports BEFORE cleaning anything.
+Reads: data/raw/subscribers.csv, data/raw/recharges.csv
+What this Script Reports:
     1. Basic profile of each file (shape, column data types, missing values)
     2. Specific quality checks on subscribers (duplicates, bad ages, messy text)
     3. Specific quality checks on recharges (bad amounts, messy status, orphan rows)
-
-Writes: 
-    The complete audit report to README.md
-    and also prints it to the terminal.
-
-Note: 
-    This script only READS and REPORTS. It does not modify or fix any data.
-
+Writes: Nothing(Prints the Audit Report to the Terminal, Manually copy-paste the output to README.md)
+Note: This script only READS and REPORTS. It does not modify or fix any data.
 Run     : python a1_audit.py
 """
 
@@ -32,17 +22,17 @@ from pathlib import Path
 
 import pandas as pd
 
-# ----------------------------------------------------------------------
+# =============================================================================
 # 1. BASIC CONFIGURATION
-# ----------------------------------------------------------------------
+# =============================================================================
 SUBS_PATH = "data/raw/subscribers.csv"
 RECH_PATH = "data/raw/recharges.csv"
 README_PATH = "README.md"
 
 
-# ----------------------------------------------------------------------
-# 2. GENERIC AUDIT (works for any DataFrame)
-# ----------------------------------------------------------------------
+# =============================================================================
+# 2. GENERIC AUDIT (For both Subscribers and Recharges)
+# =============================================================================
 def audit_table(name, df):
     """Print shape, data types and the missing-value count/percent of every column.
 
@@ -50,9 +40,9 @@ def audit_table(name, df):
         name: a label for the table, used in the printed heading.
         df:   the pandas DataFrame to audit.
     """
-    print(f"\n===== {name} =====")
+    print(f"\n===== {name} =====\n")
 
-    # Size of the Table: (number of rows, number of columns)
+    # Size of the Table: (Number of Rows, Number of Columns)
     print("Shape:", df.shape)
 
     # Data type of each Column (int, float, text, etc.)
@@ -66,12 +56,9 @@ def audit_table(name, df):
     print("\nMissing Values:\n", missing)
 
 
-# ----------------------------------------------------------------------
-# 3. TABLE-SPECIFIC FIGURES (the numbers the brief asks us to report)
-# ----------------------------------------------------------------------
 
 # =============================================================================
-# 3.a. SUBSCRIBERS: DETAILED QUALITY CHECKS
+# 3. SUBSCRIBERS CSV: DETAILED QUALITY CHECKS
 # =============================================================================
 def subscriber_figures(subs):
     """Print the specific data-quality figures for the Subscribers Table.
@@ -79,10 +66,10 @@ def subscriber_figures(subs):
     Args:
         subs: the raw subscribers DataFrame.
     """
-    print("\n===== Subscribers CSV Figures =====")
+    print("\n\n===== Subscribers CSV Figures =====\n")
 
     # --- Volume and Duplicates ---
-    print("Rows:", len(subs))                                           # Total Records
+    print("Total Rows:", len(subs))                                           # Total Records
     print("Exact Duplicate Rows:", subs.duplicated().sum())             # Fully Identical Rows
     print("Distinct subscriber_id:", subs["subscriber_id"].nunique())   # Should Equal Rows if IDs are Unique
 
@@ -98,14 +85,14 @@ def subscriber_figures(subs):
     # If "Mumbai", "mumbai", "MUMBAI " are all present, each counts as separate,
     # So a high number here hints at messy spellings needing cleanup.
     print("Distinct Raw City Spellings:", subs["city"].nunique())
-    print("Distinct Raw auto_renew Spellings:", subs["auto_renew"].nunique())               # e.g. Yes/Y/yes/TRUE
+    print("Distinct Raw auto_renew Spellings:", subs["auto_renew"].nunique())            # e.g. Yes/Y/yes/TRUE
 
     # --- Missing Target-related Value ---
     print("Blank next_cycle_recharge_inr:", subs["next_cycle_recharge_inr"].isna().sum())   
 
 
 # =============================================================================
-# 3.b. RECHARGES: DETAILED QUALITY CHECKS
+# 4 RECHARGES: DETAILED QUALITY CHECKS
 # =============================================================================
 def recharge_figures(rech, subs):
     """Print the specific data-quality figures for the recharges table.
@@ -114,10 +101,10 @@ def recharge_figures(rech, subs):
         rech: the raw recharges DataFrame.
         subs: the raw subscribers DataFrame (used to detect orphan rows).
     """
-    print("\n===== Recharges CSV Figures =====")
+    print("\n===== Recharges CSV Figures =====\n")
 
     # --- Volume and Duplicates ---
-    print("Rows:", len(rech))                                       # Total Records
+    print("Total Rows:", len(rech))                                       # Total Records
     print("Exact Duplicate Rows:", rech.duplicated().sum())          # Fully Identical Rows
     print("Distinct recharge_id:", rech["recharge_id"].nunique())   # Should Equal Rows if IDs are Unique
 
@@ -137,9 +124,9 @@ def recharge_figures(rech, subs):
     print("Orphan subscriber_id Rows:", orphans.sum())
 
 
-# ----------------------------------------------------------------------
-# 4. MAIN
-# ----------------------------------------------------------------------
+# =============================================================================
+# 5. MAIN
+# =============================================================================
 def main():
     """Load the raw files, and print the full audit report, and save the printed reports manually to the README.md."""
     subs = pd.read_csv(SUBS_PATH)
