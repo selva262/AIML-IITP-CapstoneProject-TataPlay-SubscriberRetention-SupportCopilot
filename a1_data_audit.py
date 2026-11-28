@@ -11,7 +11,7 @@ What this Script Reports:
     1. Basic profile of each file (shape, column data types, missing values)
     2. Specific quality checks on subscribers (duplicates, bad ages, messy text)
     3. Specific quality checks on recharges (bad amounts, messy status, orphan rows)
-Writes: Nothing(Prints the Audit Report to the Terminal, Manually copy-paste the output to README.md)
+Writes: Nothing(Prints the Audit Results to the Terminal, Manually Copy-Paste the Output to README.md)
 Note: This script only READS and REPORTS. It does not modify or fix any data.
 Run     : python a1_audit.py
 """
